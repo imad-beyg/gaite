@@ -1,4 +1,4 @@
-import './globals.css'
+import './app.scss'
 import {Header} from '@/app/components/header'
 import {Footer} from '@/app/components/footer'
 import { Inter } from 'next/font/google'

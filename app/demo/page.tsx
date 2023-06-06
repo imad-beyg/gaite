@@ -1,6 +1,12 @@
 "use client";
 
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import {Writing} from "@/app/components/writing";
+import Toaster from "@/app/components/toaster";
+import {useReactMediaRecorder} from "react-media-recorder";
+
 
 enum USER_TYPES {
     BOT = 'bot',
@@ -8,20 +14,31 @@ enum USER_TYPES {
 }
 
 export default function Demo() {
-    const [reset, setIsReset] = useState(false);
+    const messageElement: any = useRef(null);
+    const {status, startRecording, stopRecording, mediaBlobUrl} =
+        useReactMediaRecorder({audio: true, blobPropertyBag: {type: 'audio/mpeg'}});
+    const [reset, setReset] = useState(false);
     const [prompt, setPrompt] = useState('');
-    const [conversation, setConversation] = useState({});
-    const browserSupportsAudioRecording = true;
-    const recording = false
-
+    const [conversation, setConversation] = useState([]);
+    const [isRecording, setIsRecording] = useState(false)
+    const [disablePrompt, setDisablePrompt] = useState(false)
+    const [error, setError] = useState('');
+    const [generate, setGenerate] = useState({});
 
     useEffect(() => {
-        const chat = {
-            bot: 'How can I assist you today ?',
-            user: 'Run this command sudo chown -R `whoami` /Users/your_user_profile/.npm-global/ then install the package globally without using sudo'
+
+        if (messageElement) {
+            messageElement?.current?.addEventListener('DOMNodeInserted', (event: any) => {
+                const {currentTarget: target} = event;
+                target.scroll({top: target.scrollHeight, behavior: 'smooth'});
+            });
         }
+
+        const chat: any = [{
+            bot: 'How can I assist you today ?',
+        }]
         setConversation(chat);
-        setIsReset(false)
+        setReset(false)
     }, [reset])
 
     const onChangePrompt = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,115 +56,245 @@ export default function Demo() {
     }
 
     const onResetConversation = async () => {
-        setIsReset(true)
+        try {
+            const response = await fetch('/demo/api/chat/reset', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const {status, msg} = await response.json();
+
+            if (status) {
+                setReset(true)
+                setGenerate({});
+            }
+        } catch (e) {
+            setError(e);
+        }
     }
 
     const onGenerate = async () => {
-        console.info('Should have api call')
+        try {
+            const response = await fetch('/demo/api/chat/generate', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const {status, msg} = await response.json();
+
+            if (status) {
+                setGenerate(msg[0]);
+            }
+        } catch (e) {
+            setError(e);
+        }
     }
 
     const dispatchChat = async () => {
-        const chat = {
-            ...conversation,
-            user: prompt
+
+        if (!prompt) {
+            return false;
         }
 
+        const chat: any = [
+            ...conversation,
+            {
+                user: prompt,
+                bot: false,
+            }
+        ]
         setConversation(chat);
-        setPrompt('');
+
+        await renderChat();
     }
 
+    const renderChat = async () => {
+        try {
+            setDisablePrompt(true);
+            setPrompt('');
+            const response = await fetch('/demo/api/chat/conversation', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: prompt
+                })
+            });
 
-    const onVoiceMessage = async () => {
+            const {status, msg} = await response.json();
 
+            if (status) {
+                const chat: any = [
+                    ...conversation,
+                    {
+                        user: prompt,
+                        ...(status && {bot: msg})
+                    }
+                ]
+
+                setConversation(chat);
+            }
+        } catch (e) {
+            const chat: any = [
+                ...conversation,
+                {
+                    user: prompt,
+                    bot: e
+                }
+            ]
+
+            setConversation(chat);
+            setError(e);
+        } finally {
+            setDisablePrompt(false);
+        }
+
+    }
+
+    const onClose = () => {
+        setError('');
+    }
+
+    const onStartRecording = async () => {
+        await startRecording();
+    }
+
+    const onStopRecording = async () => {
+        await stopRecording();
+        console.info(mediaBlobUrl)
+        if (mediaBlobUrl) {
+            const blob = await fetch(mediaBlobUrl).then((response) => response.blob());
+            const audio = new File([blob], 'recording.wav', {
+                type: 'audio/mpeg'
+            })
+
+            const formData = new FormData();
+            formData.append("file", audio);
+
+            const response = await fetch('/demo/api/chat/transcript', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            console.info({data});
+
+        }
     }
 
     return (
         <>
+            {error && (
+                <Toaster message="Internal Server Error" onClose={onClose}/>
+            )}
+
             <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-8 lg:px-6">
-                <div
-                    className="h-[65vh] md:h-[65vh] relative rounded flex flex-col space-y-4 p-6 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch bg-white">
+                {!Object.keys(generate).length && (
+                    <>
+                        <div
+                            ref={messageElement}
+                            className="h-[65vh] md:h-[65vh] relative rounded flex flex-col space-y-4 p-6 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch bg-white">
+                            {conversation.map((conversationMessage: any) => {
+                                return (
+                                    <>
+                                        {Object.entries(conversationMessage).map(([userType, message], index) => {
+                                            const isUser = userType === USER_TYPES.USER;
+                                            return (
+                                                <div className="chat-message" key={`chat-message-${index}`}>
+                                                    <div className={`flex items-center ${isUser && 'justify-end'}`}>
+                                                        <div
+                                                            className={`flex flex-col space-y-2 text-xs max-w-2xl mx-2 ${isUser ? 'order-1 items-end' : 'order-2 items-start'}`}>
+                                                            <div>
+                                                        <span
+                                                            className={`markdown prose-sm px-4 py-2 rounded-lg inline-block ${isUser ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}`}
+                                                        >
+                                                            {message ? (
+                                                                // eslint-disable-next-line react/no-children-prop
+                                                                <ReactMarkdown children={`${message}`}
+                                                                               remarkPlugins={[remarkGfm]}/>
+                                                            ) : (
+                                                                <Writing/>
+                                                            )}
+                                                        </span>
+                                                            </div>
+                                                        </div>
 
+                                                        <img
+                                                            src={`${isUser ? 'https://cdn-icons-png.flaticon.com/512/6171/6171927.png' : 'https://cdn-icons-png.flaticon.com/512/3398/3398643.png'}`}
+                                                            alt={userType}
+                                                            className="w-8 h-8 rounded-full order-1 border-2"/>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </>
+                                )
+                            })}
+                        </div>
+                        <div className="border-t-2 border-gray-200 p-6 mb-2 sm:mb-0 bg-stone-50 rounded">
+                            <div className="flex justify-center pb-4">
+                                <button type="button"
+                                        className="mr-2 inline-flex items-center justify-center rounded-md px-2 py-2 border-2 focus:outline-none bg-white"
+                                        onClick={onResetConversation}
+                                >
+                                    <svg stroke="currentColor" fill="none" viewBox="0 0 24 24"
+                                         strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2"
+                                         height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                        <polyline points="1 4 1 10 7 10"></polyline>
+                                        <polyline points="23 20 23 14 17 14"></polyline>
+                                        <path
+                                            d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                                    </svg>
+                                    <span className="font-light text-sm">Restart</span>
+                                </button>
 
-                    {Object.entries(conversation).map(([userType, message], index) => {
-                        const isUser = userType === USER_TYPES.USER;
-                        return (
-                            <div className="chat-message" key={`chat-message-${index}`}>
-                                <div className={`flex items-end ${isUser && 'justify-end'}`}>
-                                    <div
-                                        className={`flex flex-col space-y-2 text-xs max-w-xs mx-2 ${isUser ? 'order-1 items-end' : 'order-2 items-start'}`}>
-                                        <div>
-                                                <span
-                                                    className={`px-4 py-2 rounded-lg inline-block ${isUser ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}`}>
-                                                    {`${message}`}
-                                                </span>
-                                        </div>
-                                    </div>
-                                    <img
-                                        src={`${isUser ? 'https://cdn-icons-png.flaticon.com/512/6171/6171927.png' : 'https://cdn-icons-png.flaticon.com/512/3398/3398643.png'}`}
-                                        alt={userType} className="w-8 h-8 rounded-full order-1 border-2"/>
-                                </div>
+                                <button type="button"
+                                        className="inline-flex items-center justify-center rounded-md px-2 py-2 border-2 focus:outline-none bg-white"
+                                        onClick={onGenerate}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"
+                                         className="h-4 w-4 mr-2">
+                                        <path id="Path_50" data-name="Path 50"
+                                              d="M-11.5,0h-11A2.5,2.5,0,0,0-25,2.5v8A2.5,2.5,0,0,0-22.5,13h.5v2.5a.5.5,0,0,0,.309.462A.489.489,0,0,0-21.5,16a.5.5,0,0,0,.354-.146L-18.293,13H-11.5A2.5,2.5,0,0,0-9,10.5v-8A2.5,2.5,0,0,0-11.5,0ZM-10,10.5A1.5,1.5,0,0,1-11.5,12h-7a.5.5,0,0,0-.354.146L-21,14.293V12.5a.5.5,0,0,0-.5-.5h-1A1.5,1.5,0,0,1-24,10.5v-8A1.5,1.5,0,0,1-22.5,1h11A1.5,1.5,0,0,1-10,2.5Zm-2.038-3.809a.518.518,0,0,1-.109.163l-2,2A.5.5,0,0,1-14.5,9a.5.5,0,0,1-.354-.146.5.5,0,0,1,0-.708L-13.707,7H-18.5A1.5,1.5,0,0,0-20,8.5a.5.5,0,0,1-.5.5.5.5,0,0,1-.5-.5A2.5,2.5,0,0,1-18.5,6h4.793l-1.147-1.146a.5.5,0,0,1,0-.708.5.5,0,0,1,.708,0l2,2a.518.518,0,0,1,.109.163A.505.505,0,0,1-12.038,6.691Z"
+                                              transform="translate(25)"/>
+                                    </svg>
+                                    <span className="font-light text-sm">Generate</span>
+                                </button>
                             </div>
-                        )
-                    })}
-                </div>
-                <div className="border-t-2 border-gray-200 p-6 mb-2 sm:mb-0 bg-stone-50 rounded">
-                    <div className="flex justify-center pb-4">
-                        <button type="button"
-                                className="mr-2 inline-flex items-center justify-center rounded-md px-2 py-2 border-2 focus:outline-none bg-white"
-                                onClick={onResetConversation}
-                        >
-                            <svg stroke="currentColor" fill="none" viewBox="0 0 24 24"
-                                 strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2"
-                                 height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                <polyline points="1 4 1 10 7 10"></polyline>
-                                <polyline points="23 20 23 14 17 14"></polyline>
-                                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
-                            </svg>
-                            <span className="font-light text-sm">Restart</span>
-                        </button>
-
-                        <button type="button"
-                                className="inline-flex items-center justify-center rounded-md px-2 py-2 border-2 focus:outline-none bg-white"
-                                onClick={onGenerate}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"
-                                 className="h-4 w-4 mr-2">
-                                <path id="Path_50" data-name="Path 50"
-                                      d="M-11.5,0h-11A2.5,2.5,0,0,0-25,2.5v8A2.5,2.5,0,0,0-22.5,13h.5v2.5a.5.5,0,0,0,.309.462A.489.489,0,0,0-21.5,16a.5.5,0,0,0,.354-.146L-18.293,13H-11.5A2.5,2.5,0,0,0-9,10.5v-8A2.5,2.5,0,0,0-11.5,0ZM-10,10.5A1.5,1.5,0,0,1-11.5,12h-7a.5.5,0,0,0-.354.146L-21,14.293V12.5a.5.5,0,0,0-.5-.5h-1A1.5,1.5,0,0,1-24,10.5v-8A1.5,1.5,0,0,1-22.5,1h11A1.5,1.5,0,0,1-10,2.5Zm-2.038-3.809a.518.518,0,0,1-.109.163l-2,2A.5.5,0,0,1-14.5,9a.5.5,0,0,1-.354-.146.5.5,0,0,1,0-.708L-13.707,7H-18.5A1.5,1.5,0,0,0-20,8.5a.5.5,0,0,1-.5.5.5.5,0,0,1-.5-.5A2.5,2.5,0,0,1-18.5,6h4.793l-1.147-1.146a.5.5,0,0,1,0-.708.5.5,0,0,1,.708,0l2,2a.518.518,0,0,1,.109.163A.505.505,0,0,1-12.038,6.691Z"
-                                      transform="translate(25)"/>
-                            </svg>
-                            <span className="font-light text-sm">Generate</span>
-                        </button>
-                    </div>
-                    <div className="relative flex">
-                        {browserSupportsAudioRecording && (
-                            <span className="absolute inset-y-0 flex items-center">
+                            <div className="relative flex">
+                         <span className="absolute inset-y-0 flex items-center">
                             <button type="button"
                                     className="mx-2 inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none bg-stone-100"
-                                    onTouchStart={onVoiceMessage}
-                                    onMouseDown={onVoiceMessage}
-                                    onTouchEnd={onVoiceMessage}
-                                    onMouseUp={onVoiceMessage}
+                                    onTouchStart={onStartRecording}
+                                    onMouseDown={onStartRecording}
+                                    onTouchEnd={onStopRecording}
+                                    onMouseUp={onStopRecording}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                    stroke="currentColor"
-                                   className={`h-5 w-5 text-gray-600 ${recording && 'animate-pulse text-red-500'}`}>
+                                   className={`h-5 w-5 text-gray-600 ${status === "recording" && 'animate-pulse text-red-500'}`}>
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                       d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
                               </svg>
                             </button>
                         </span>
-                        )}
 
 
-                        <input type="text" placeholder="Send a message."
-                               className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-14 bg-white rounded-md py-3 border-2"
-                               value={prompt}
-                               onChange={onChangePrompt}
-                               onKeyDown={onKeyDownPrompt}
-                        />
+                                <input type="text" placeholder="Send a message."
+                                       disabled={disablePrompt}
+                                       className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-14 bg-white rounded-md py-3 border-2"
+                                       value={prompt}
+                                       onChange={onChangePrompt}
+                                       onKeyDown={onKeyDownPrompt}
+                                />
 
-                        <span className="absolute right-0 inset-y-0 flex items-center">
+                                <span className="absolute right-0 inset-y-0 flex items-center">
                             <button type="button"
                                     className="mx-2 inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none bg-stone-100"
                                     onClick={onClickPrompt}
@@ -159,8 +306,50 @@ export default function Demo() {
                               </svg>
                             </button>
                         </span>
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {Object.keys(generate).length > 0 && (
+                    <>
+                        <div
+                            className="h-[65vh] md:h-[65vh] relative rounded flex flex-col space-y-4 p-6 bg-white items-center justify-center">
+
+                            <div className="markdown prose mx-auto">
+                                <table>
+                                    {Object.entries(generate).map(([key, value]: any, index) => {
+                                        return (
+                                            <tr key={`chat-result-${index}`}>
+                                                <td className="font-bold">{key}</td>
+                                                <td>{value}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                </table>
+                            </div>
+
+
+                            <button type="button"
+                                    className="mr-2 inline-flex items-center justify-center rounded-md px-2 py-2 border-2 focus:outline-none bg-white"
+                                    onClick={onResetConversation}
+                            >
+                                <svg stroke="currentColor" fill="none" viewBox="0 0 24 24"
+                                     strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 mr-2"
+                                     height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="1 4 1 10 7 10"></polyline>
+                                    <polyline points="23 20 23 14 17 14"></polyline>
+                                    <path
+                                        d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                                </svg>
+                                <span className="font-light text-sm">Restart</span>
+                            </button>
+
+
+                        </div>
+                    </>
+                )}
+
             </div>
         </>
     )
