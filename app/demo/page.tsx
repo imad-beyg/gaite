@@ -1,12 +1,12 @@
 "use client";
 
 import React, {useState, useEffect, useRef} from "react";
+import Image from "next/image";
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import {Writing} from "@/app/components/writing";
 import Toaster from "@/app/components/toaster";
-import {useReactMediaRecorder} from "react-media-recorder";
-
+import {Record} from "@/app/components/record";
 
 enum USER_TYPES {
     BOT = 'bot',
@@ -15,12 +15,10 @@ enum USER_TYPES {
 
 export default function Demo() {
     const messageElement: any = useRef(null);
-    const {status, startRecording, stopRecording, mediaBlobUrl} =
-        useReactMediaRecorder({audio: true, blobPropertyBag: {type: 'audio/mpeg'}});
+
     const [reset, setReset] = useState(false);
     const [prompt, setPrompt] = useState('');
     const [conversation, setConversation] = useState([]);
-    const [isRecording, setIsRecording] = useState(false)
     const [disablePrompt, setDisablePrompt] = useState(false)
     const [error, setError] = useState('');
     const [generate, setGenerate] = useState({});
@@ -69,7 +67,7 @@ export default function Demo() {
                 setReset(true)
                 setGenerate({});
             }
-        } catch (e) {
+        } catch (e: any) {
             setError(e);
         }
     }
@@ -87,7 +85,7 @@ export default function Demo() {
             if (status) {
                 setGenerate(msg[0]);
             }
-        } catch (e) {
+        } catch (e: any) {
             setError(e);
         }
     }
@@ -137,7 +135,7 @@ export default function Demo() {
 
                 setConversation(chat);
             }
-        } catch (e) {
+        } catch (e: any) {
             const chat: any = [
                 ...conversation,
                 {
@@ -158,35 +156,6 @@ export default function Demo() {
         setError('');
     }
 
-    const onStartRecording = async () => {
-        await startRecording();
-    }
-
-    const onStopRecording = async () => {
-        await stopRecording();
-        console.info(mediaBlobUrl)
-        if (mediaBlobUrl) {
-            const blob = await fetch(mediaBlobUrl).then((response) => response.blob());
-            const audio = new File([blob], 'recording.wav', {
-                type: 'audio/mpeg'
-            })
-
-            const formData = new FormData();
-            formData.append("file", audio);
-
-            const response = await fetch('/demo/api/chat/transcript', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                body: formData
-            });
-
-            const data = await response.json();
-            console.info({data});
-
-        }
-    }
 
     return (
         <>
@@ -225,10 +194,13 @@ export default function Demo() {
                                                             </div>
                                                         </div>
 
-                                                        <img
-                                                            src={`${isUser ? 'https://cdn-icons-png.flaticon.com/512/6171/6171927.png' : 'https://cdn-icons-png.flaticon.com/512/3398/3398643.png'}`}
+                                                        <Image
+                                                            className="w-8 h-8 rounded-full order-1 border-2"
+                                                            src={isUser ? '/user.png' : '/bot.png'}
+                                                            width={28}
+                                                            height={28}
                                                             alt={userType}
-                                                            className="w-8 h-8 rounded-full order-1 border-2"/>
+                                                        />
                                                     </div>
                                                 </div>
                                             )
@@ -268,23 +240,7 @@ export default function Demo() {
                                 </button>
                             </div>
                             <div className="relative flex">
-                         <span className="absolute inset-y-0 flex items-center">
-                            <button type="button"
-                                    className="mx-2 inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none bg-stone-100"
-                                    onTouchStart={onStartRecording}
-                                    onMouseDown={onStartRecording}
-                                    onTouchEnd={onStopRecording}
-                                    onMouseUp={onStopRecording}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                   stroke="currentColor"
-                                   className={`h-5 w-5 text-gray-600 ${status === "recording" && 'animate-pulse text-red-500'}`}>
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
-                              </svg>
-                            </button>
-                        </span>
-
+                                <Record />
 
                                 <input type="text" placeholder="Send a message."
                                        disabled={disablePrompt}
@@ -295,17 +251,17 @@ export default function Demo() {
                                 />
 
                                 <span className="absolute right-0 inset-y-0 flex items-center">
-                            <button type="button"
-                                    className="mx-2 inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none bg-stone-100"
-                                    onClick={onClickPrompt}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                   className="h-5 w-5 text-gray-600 transform rotate-90">
-                                        <path
-                                            d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                              </svg>
-                            </button>
-                        </span>
+                                    <button type="button"
+                                            className="mx-2 inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none bg-stone-100"
+                                            onClick={onClickPrompt}
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                           className="h-5 w-5 text-gray-600 transform rotate-90">
+                                                <path
+                                                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                                      </svg>
+                                    </button>
+                                </span>
                             </div>
                         </div>
                     </>
