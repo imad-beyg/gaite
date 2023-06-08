@@ -1,7 +1,7 @@
 export const Logo = () => {
     return (
         <>
-            <svg className="w-52" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.62 126.65">
+            <svg className="w-40 sm:w-52" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.62 126.65">
                 <defs>
                     <linearGradient id="layer_39" x1="-902.37" y1="646.34" x2="-902.01" y2="651.48"
                                     gradientTransform="translate(3768.1 1202.04) rotate(-19.15) scale(3.5 -3.5)"

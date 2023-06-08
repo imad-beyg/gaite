@@ -9,7 +9,7 @@ export default function Home() {
     return (
         <>
             <section className="bg-white -dark:bg-gray-900 relative overflow-hidden">
-                <HeroAnimation className="absolute w-full h-full z-0 top-0 left-0 translate-x-1/4" />
+                <HeroAnimation className="absolute w-full h-full z-0 top-0 left-0 opacity-60" />
                 <div className="relative z-10 grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-36 lg:grid-cols-12">
                     <div className="mr-auto place-self-center lg:col-span-7">
                         <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl -dark:text-white">Speech driven generative ai and data engineering </h1>

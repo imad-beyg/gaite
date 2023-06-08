@@ -84,8 +84,8 @@ export default function Marketplace() {
         <>
             <section className="py-8 px-4 mx-auto max-w-screen-xl sm:py-8 lg:px-6 min-h-screen">
 
-                <div className="grid grid-cols-3 gap-4 mb-5">
-                    <div className="col-start-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-5">
+                    <div className="md:col-start-2 xl:col-start-3">
                         <input
                             type="text"
                             className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 px-4 bg-white rounded-md py-3 border-2"
@@ -95,7 +95,8 @@ export default function Marketplace() {
                     </div>
 
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {requests.map(({id, title, description, examples}, index) => {
                         return (
                             <div className="rounded shadow px-4 p-6 bg-white" key={`request-${index}`}>
