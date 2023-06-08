@@ -33,6 +33,7 @@ export default function Home() {
                             width={520}
                             height={390}
                             alt="mockup"
+                            fetchPriority="low"
                         />
                     </div>
                 </div>

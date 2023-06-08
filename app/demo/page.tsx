@@ -185,9 +185,9 @@ export default function Demo() {
                         <div
                             ref={messageElement}
                             className="h-[65vh] md:h-[65vh] relative rounded flex flex-col space-y-4 p-6 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch bg-white">
-                            {conversation.map((conversationMessage: any) => {
+                            {conversation.map((conversationMessage: any, index) => {
                                 return (
-                                    <>
+                                    <div key={`conversationMessage-${index}`}>
                                         {Object.entries(conversationMessage).map(([userType, message], index) => {
                                             const isUser = userType === USER_TYPES.USER;
                                             return (
@@ -221,7 +221,7 @@ export default function Demo() {
                                                 </div>
                                             )
                                         })}
-                                    </>
+                                    </div>
                                 )
                             })}
                         </div>
