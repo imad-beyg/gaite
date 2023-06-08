@@ -78,7 +78,7 @@ export default function Marketplace() {
         <>
             <section className="py-8 px-4 mx-auto max-w-screen-xl sm:py-8 lg:px-6 min-h-screen">
 
-                <div className="grid grid-cols-3 gap-4 mb-10">
+                <div className="grid grid-cols-3 gap-4 mb-5">
                     <div className="col-start-3">
                         <input
                             type="text"
