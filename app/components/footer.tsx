@@ -18,22 +18,21 @@ export const Footer = () =>{
                             <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Resources</h2>
                             <ul className="text-gray-600 dark:text-gray-400">
                                 <li className="mb-4">
-                                    <a href="#" className="hover:underline">About</a>
+                                    <Link href="/" className="hover:underline">Home</Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline">Demo</a>
+                                    <Link href="/marketplace" className="hover:underline">About</Link>
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Follow
-                                us</h2>
+                            <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Explore</h2>
                             <ul className="text-gray-600 dark:text-gray-400">
                                 <li className="mb-4">
-                                    <a href="#" className="hover:underline ">Github</a>
+                                    <Link href="/demo" className="hover:underline ">Demo</Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline">Discord</a>
+                                    <a href="/marketplace" className="hover:underline">Marketplace</a>
                                 </li>
                             </ul>
                         </div>
