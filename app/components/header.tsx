@@ -52,7 +52,7 @@ export const Header = () => {
                         </svg>
 
                         <span
-                            className="self-center text-xl text-blue-700 font-semibold whitespace-nowrap dark:text-white mt-1 ml-1">
+                            className="self-center text-xl text-blue-700 font-semibold whitespace-nowrap dark:text-white mt-4 ml-4">
                             GAIDE
                         </span>
 
