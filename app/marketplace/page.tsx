@@ -1,6 +1,10 @@
+"use client";
+
 import Link from 'next/link';
+import {useState} from 'react';
+
 export default function Marketplace() {
-    const requests = [
+    const items = [
         {
             "id": 1,
             "title": "Travel Reimbursement",
@@ -62,26 +66,48 @@ export default function Marketplace() {
             "examples": ["Certification exam fees", "Training course fees"]
         }
     ];
+
+    const [requests, setRequests] = useState(items);
+    const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const {value} = event.target;
+        const filteredItems = items.filter(({title})=> title.toLowerCase().includes(value.toLowerCase()))
+        setRequests(filteredItems);
+    }
+
     return (
         <>
-            <section className="py-8 px-4 mx-auto max-w-screen-xl sm:py-8 lg:px-6 ">
-                <div className="grid grid-cols-3">
+            <section className="py-8 px-4 mx-auto max-w-screen-xl sm:py-8 lg:px-6 min-h-screen">
+
+                <div className="grid grid-cols-3 gap-4 mb-10">
+                    <div className="col-start-3">
+                        <input
+                            type="text"
+                            className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 px-4 bg-white rounded-md py-3 border-2"
+                            placeholder='Search'
+                            onInput={onSearch}
+                        />
+                    </div>
+
+                </div>
+                <div className="grid grid-cols-3 gap-4">
                     {requests.map(({id, title, description, examples}, index) => {
                         return (
-                            <div className="rounded shadow px-4 p-6 bg-white mx-2.5 mb-5" key={`request-${index}`}>
-                                <h2 className="text-gray-700 text-md font-bold mb-2.5">{title}</h2>
+                            <div className="rounded shadow px-4 p-6 bg-white" key={`request-${index}`}>
+                                <h2 className="text-gray-700 text-md font-bold">{title}</h2>
                                 <p className="text-gray-500 text-sm h-16 mb-2.5">{description}</p>
                                 <div className="flex mb-4">
                                     {examples.map((example, index) => {
                                         return (
                                             <>
-                                                <span className="bg-gray-400 text-white rounded text-xs px-1.5 py-1 mr-1 capitalize" key={index}>{example}</span>
+                                                <span
+                                                    className="bg-gray-400 text-white rounded text-xs px-1.5 py-1 mr-1 capitalize"
+                                                    key={index}>{example}</span>
                                             </>
                                         )
                                     })}
                                 </div>
                                 <Link href="/demo"
-                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generate
                                 </Link>
                             </div>
                         )
