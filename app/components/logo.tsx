@@ -58,7 +58,7 @@ export const Logo = () => {
             </svg>
 
             <span
-                className="self-center text-xs text-blue-700 font-semibold whitespace-nowrap -dark:text-white -mt-1 ml-1">
+                className="self-center text-xs text-blue-700 font-semibold whitespace-nowrap dark:text-white -mt-1 ml-1">
                             GAIDE
                         </span>
         </>
