@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import {Writing} from "@/app/components/writing";
 import Toaster from "@/app/components/toaster";
 import {Record} from "@/app/components/record";
+import {Loader} from "@/app/components/loader";
 
 enum USER_TYPES {
     BOT = 'bot',
@@ -22,6 +23,7 @@ export default function Demo() {
     const [disablePrompt, setDisablePrompt] = useState(false)
     const [error, setError] = useState('');
     const [generate, setGenerate] = useState({});
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
 
@@ -55,6 +57,7 @@ export default function Demo() {
 
     const onResetConversation = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch('/demo/api/chat/reset', {
                 method: "POST",
                 headers: {
@@ -69,11 +72,14 @@ export default function Demo() {
             }
         } catch (e: any) {
             setError(e);
+        } finally {
+            setIsLoading(false)
         }
     }
 
     const onGenerate = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch('/demo/api/chat/generate', {
                 method: "POST",
                 headers: {
@@ -82,11 +88,17 @@ export default function Demo() {
             });
             const {status, msg} = await response.json();
 
+            if (!status) {
+                setError(msg[0])
+            }
+
             if (status) {
                 setGenerate(msg[0]);
             }
         } catch (e: any) {
             setError(e);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -160,7 +172,11 @@ export default function Demo() {
     return (
         <>
             {error && (
-                <Toaster message="Internal Server Error" onClose={onClose}/>
+                <Toaster message={error} onClose={onClose}/>
+            )}
+
+            {isLoading && (
+                <Loader/>
             )}
 
             <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-8 lg:px-6">
@@ -240,11 +256,11 @@ export default function Demo() {
                                 </button>
                             </div>
                             <div className="relative flex">
-                                <Record />
+                                <Record setPrompt={setPrompt} setIsLoading={setIsLoading} setError={setError}/>
 
                                 <input type="text" placeholder="Send a message."
                                        disabled={disablePrompt}
-                                       className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-14 bg-white rounded-md py-3 border-2"
+                                       className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 px-14 bg-white rounded-md py-3 border-2"
                                        value={prompt}
                                        onChange={onChangePrompt}
                                        onKeyDown={onKeyDownPrompt}
@@ -283,6 +299,16 @@ export default function Demo() {
                                         )
                                     })}
                                 </table>
+                            </div>
+
+                            <div className="prose mx-auto">
+                                <>
+                                    <div dangerouslySetInnerHTML={{__html: generate}}></div>
+
+                                    {/* eslint-disable-next-line react/no-children-prop */}
+                                    <ReactMarkdown children={`${generate}`}
+                                                   remarkPlugins={[remarkGfm]}/>
+                                </>
                             </div>
 
 
