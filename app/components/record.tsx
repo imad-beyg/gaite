@@ -1,5 +1,5 @@
 "use client"
-import {useState} from 'react';
+
 import {useReactMediaRecorder} from "react-media-recorder";
 
 export const Record = ({setPrompt, setIsLoading, setError}: any) => {

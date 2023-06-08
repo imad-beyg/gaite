@@ -2,12 +2,19 @@
 
 import React, {useState, useEffect, useRef} from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import {Writing} from "@/app/components/writing";
 import Toaster from "@/app/components/toaster";
-import {Record} from "@/app/components/record";
 import {Loader} from "@/app/components/loader";
+
+const Record = dynamic(
+    () => import("@/app/components/record").then((module) => module.Record),
+    {
+        ssr: false,
+    }
+);
 
 enum USER_TYPES {
     BOT = 'bot',
