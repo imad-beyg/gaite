@@ -4,6 +4,7 @@ import {Footer} from '@/app/components/footer'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
+import { MarketplaceContextProvider } from './context/marketplace'
 
 export const metadata = {
   title: 'Gaide',
@@ -18,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      <Header />
-      <main role="main">
-        {children}
-      </main>
-      <Footer/>
+      <MarketplaceContextProvider>
+          <Header />
+          <main role="main">
+            {children}
+          </main>
+          <Footer/>
+      </MarketplaceContextProvider>
       </body>
     </html>
   )

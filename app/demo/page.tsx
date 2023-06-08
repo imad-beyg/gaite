@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm'
 import {Writing} from "@/app/components/writing";
 import Toaster from "@/app/components/toaster";
 import {Loader} from "@/app/components/loader";
+import {useMarketplaceContext} from '@/app/context/marketplace'
 
 const Record = dynamic(
     () => import("@/app/components/record").then((module) => module.Record),
@@ -23,7 +24,6 @@ enum USER_TYPES {
 
 export default function Demo() {
     const messageElement: any = useRef(null);
-
     const [reset, setReset] = useState(false);
     const [prompt, setPrompt] = useState('');
     const [conversation, setConversation] = useState([]);
@@ -31,9 +31,11 @@ export default function Demo() {
     const [error, setError] = useState('');
     const [generate, setGenerate] = useState({});
     const [isLoading, setIsLoading] = useState(false)
+    const {marketplacePrompt, setMarketplacePrompt}: any = useMarketplaceContext();
+
+    const hasMarketplacePrompt = Object.keys(marketplacePrompt).length > 0
 
     useEffect(() => {
-
         if (messageElement) {
             messageElement?.current?.addEventListener('DOMNodeInserted', (event: any) => {
                 const {currentTarget: target} = event;
@@ -44,8 +46,15 @@ export default function Demo() {
         const chat: any = [{
             bot: 'How can I assist you today ?',
         }]
+
         setConversation(chat);
-        setReset(false)
+        setReset(false);
+        if (hasMarketplacePrompt) {
+            setPrompt(marketplacePrompt.description);
+            dispatchChat()
+                .then(() => setMarketplacePrompt({}))
+                .catch((e) => setError(e))
+        }
     }, [reset])
 
     const onChangePrompt = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +85,7 @@ export default function Demo() {
             if (status) {
                 setReset(true)
                 setGenerate({});
+                setMarketplacePrompt({})
             }
         } catch (e: any) {
             setError(e);
@@ -110,15 +120,14 @@ export default function Demo() {
     }
 
     const dispatchChat = async () => {
-
-        if (!prompt) {
+        if (!prompt && !hasMarketplacePrompt) {
             return false;
         }
 
         const chat: any = [
             ...conversation,
             {
-                user: prompt,
+                user: hasMarketplacePrompt ? marketplacePrompt.description : prompt,
                 bot: false,
             }
         ]
@@ -137,7 +146,7 @@ export default function Demo() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    message: prompt
+                    message: hasMarketplacePrompt ? marketplacePrompt.description : prompt
                 })
             });
 
@@ -147,7 +156,7 @@ export default function Demo() {
                 const chat: any = [
                     ...conversation,
                     {
-                        user: prompt,
+                        user: hasMarketplacePrompt ? marketplacePrompt.description : prompt,
                         ...(status && {bot: msg})
                     }
                 ]
@@ -158,7 +167,7 @@ export default function Demo() {
             const chat: any = [
                 ...conversation,
                 {
-                    user: prompt,
+                    user: hasMarketplacePrompt ? marketplacePrompt.description : prompt,
                     bot: e
                 }
             ]
@@ -199,7 +208,8 @@ export default function Demo() {
                                             const isUser = userType === USER_TYPES.USER;
                                             return (
                                                 <div className="chat-message" key={`chat-message-${index}`}>
-                                                    <div className={`flex items-center ${isUser && 'justify-end'}`}>
+                                                    <div
+                                                        className={`flex items-center ${isUser && 'justify-end'} mb-4`}>
                                                         <div
                                                             className={`flex flex-col space-y-2 text-xs max-w-2xl mx-2 ${isUser ? 'order-1 items-end' : 'order-2 items-start'}`}>
                                                             <div>
