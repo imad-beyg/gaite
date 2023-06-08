@@ -10,7 +10,7 @@ export const Footer = () =>{
                             {/*<img src="https://flowbite.com/docs/images/logo.svg" className="mr-3 h-8"*/}
                             {/*     alt="FlowBite Logo"/>*/}
                             <span
-                                className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">GAITE</span>
+                                className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">GAIDE</span>
                         </Link>
                     </div>
                     <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
@@ -53,7 +53,7 @@ export const Footer = () =>{
                 <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8"/>
                 <div className="sm:flex sm:items-center sm:justify-between">
                 <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <Link href="/"
-                                                                                                    className="hover:underline">GAITE</Link>. All Rights Reserved.
+                                                                                                    className="hover:underline">GAIDE</Link>. All Rights Reserved.
                 </span>
                     <div className="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
                         <a href="#" className="text-gray-500 hover:text-gray-900 dark:hover:text-white">

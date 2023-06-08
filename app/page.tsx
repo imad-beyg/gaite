@@ -1,19 +1,24 @@
+"use client"
+
 import Image from 'next/image';
+import Link from "next/link";
+import {HeroAnimation} from "@/app/components/hero-animation";
 
 export default function Home() {
+
     return (
         <>
-            <section className="bg-white dark:bg-gray-900">
-                <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-24 lg:grid-cols-12">
+            <section className="bg-white -dark:bg-gray-900 relative overflow-hidden">
+                <HeroAnimation className="absolute w-full h-full z-0 top-0 left-0 translate-x-1/4" />
+                <div className="relative z-10 grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-36 lg:grid-cols-12">
                     <div className="mr-auto place-self-center lg:col-span-7">
-                        <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-white">Payments
-                            tool for software companies</h1>
-                        <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">From
-                            checkout to global sales tax compliance, companies around the world use Flowbite to simplify
-                            their payment
-                            stack.</p>
-                        <a href="#"
-                           className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                        <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl -dark:text-white">Speech driven generative ai and data engineering </h1>
+                        <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl -dark:text-gray-400">
+                            A one-stop business operation solution primarily driven by voice interactions, aiming to reduce manual interventions and save time and effort.
+                        </p>
+
+                        <Link href="/demo"
+                           className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 -dark:focus:ring-blue-900">
                             Get started
                             <svg className="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -21,32 +26,24 @@ export default function Home() {
                                       d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
                                       clipRule="evenodd"></path>
                             </svg>
-                        </a>
-                        <a href="#"
-                           className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                            Speak to Sales
-                        </a>
+                        </Link>
+                        <Link href="/marketplace"
+                           className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 -dark:text-white -dark:border-gray-700 -dark:hover:bg-gray-700 -dark:focus:ring-gray-800">
+                            Marketplace
+                        </Link>
                     </div>
-                    <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                        <Image
-                            src="/phone-mockup.png"
-                            width={520}
-                            height={390}
-                            alt="mockup"
-                            fetchPriority="low"
-                        />
-                    </div>
+
                 </div>
             </section>
 
-            <section className="bg-white dark:bg-gray-900">
+            <section className="bg-white -dark:bg-gray-900 hidden">
                 <div className="py-8 lg:py-16 mx-auto max-w-screen-xl px-4">
-                    <h2 className="mb-8 lg:mb-16 text-3xl font-extrabold tracking-tight leading-tight text-center text-gray-900 dark:text-white md:text-4xl">You’ll
+                    <h2 className="mb-8 lg:mb-16 text-3xl font-extrabold tracking-tight leading-tight text-center text-gray-900 -dark:text-white md:text-4xl">You’ll
                         be in good company</h2>
                     <div
-                        className="grid grid-cols-2 gap-8 text-gray-500 sm:gap-12 md:grid-cols-3 lg:grid-cols-6 dark:text-gray-400">
+                        className="grid grid-cols-2 gap-8 text-gray-500 sm:gap-12 md:grid-cols-3 lg:grid-cols-6 -dark:text-gray-400">
                         <a href="#" className="flex justify-center items-center">
-                            <svg className="h-9 hover:text-gray-900 dark:hover:text-white" viewBox="0 0 125 35"
+                            <svg className="h-9 hover:text-gray-900 -dark:hover:text-white" viewBox="0 0 125 35"
                                  fill="currentColor"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd"
@@ -55,7 +52,7 @@ export default function Home() {
                             </svg>
                         </a>
                         <a href="#" className="flex justify-center items-center">
-                            <svg className="h-9 hover:text-gray-900 dark:hover:text-white" viewBox="0 0 86 29"
+                            <svg className="h-9 hover:text-gray-900 -dark:hover:text-white" viewBox="0 0 86 29"
                                  fill="currentColor"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd"
@@ -64,7 +61,7 @@ export default function Home() {
                             </svg>
                         </a>
                         <a href="#" className="flex justify-center items-center">
-                            <svg className="h-8 hover:text-gray-900 dark:hover:text-white" viewBox="0 0 151 34"
+                            <svg className="h-8 hover:text-gray-900 -dark:hover:text-white" viewBox="0 0 151 34"
                                  fill="currentColor"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <g clipPath="url(#clip0_3753_27919)">
@@ -82,7 +79,7 @@ export default function Home() {
                         </a>
 
                         <a href="#" className="flex justify-center items-center">
-                            <svg className="h-9 hover:text-gray-900 dark:hover:text-white" viewBox="0 0 124 38"
+                            <svg className="h-9 hover:text-gray-900 -dark:hover:text-white" viewBox="0 0 124 38"
                                  fill="currentColor"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -91,7 +88,7 @@ export default function Home() {
                             </svg>
                         </a>
                         <a href="#" className="flex justify-center items-center">
-                            <svg className="h-9 hover:text-gray-900 dark:hover:text-white" viewBox="0 0 137 37"
+                            <svg className="h-9 hover:text-gray-900 -dark:hover:text-white" viewBox="0 0 137 37"
                                  fill="currentColor"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -149,7 +146,7 @@ export default function Home() {
                             </svg>
                         </a>
                         <a href="#" className="flex justify-center items-center">
-                            <svg className="h-6 hover:text-gray-900 dark:hover:text-white" viewBox="0 0 124 21"
+                            <svg className="h-6 hover:text-gray-900 -dark:hover:text-white" viewBox="0 0 124 21"
                                  fill="currentColor"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" clipRule="evenodd"
@@ -182,22 +179,19 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="bg-gray-50 dark:bg-gray-800">
+            <section className="bg-gray-50 -dark:bg-gray-800">
                 <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
                     <div className="max-w-screen-md mb-8 lg:mb-16">
-                        <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">Designed for business
+                        <h2 className="mb-4 text-4xl font-extrabold text-gray-900 -dark:text-white">Designed for business
                             teams like
                             yours</h2>
-                        <p className="text-gray-500 sm:text-xl dark:text-gray-400">Here at Flowbite we focus on markets
-                            where
-                            technology, innovation, and capital can unlock long-term value and drive economic
-                            growth.</p>
+                        <p className="text-gray-500 sm:text-xl -dark:text-gray-400">Here at Gaide we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
                     </div>
                     <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
                         <div>
                             <div
-                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
-                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 -dark:bg-blue-900">
+                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 -dark:text-blue-300"
                                      fill="currentColor"
                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd"
@@ -205,31 +199,26 @@ export default function Home() {
                                           clipRule="evenodd"></path>
                                 </svg>
                             </div>
-                            <h3 className="mb-2 text-xl font-bold dark:text-white">Marketing</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Plan it, create it, launch it. Collaborate
-                                seamlessly with
-                                all the organization and hit your marketing goals every month with our marketing
-                                plan.</p>
+                            <h3 className="mb-2 text-xl font-bold -dark:text-white">Voice-driven</h3>
+                            <p className="text-gray-500 -dark:text-gray-400">Users input commands through voice, and the system understands and executes the corresponding operations.</p>
                         </div>
                         <div>
                             <div
-                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
-                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 -dark:bg-blue-900">
+                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 -dark:text-blue-300"
                                      fill="currentColor"
                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
                                 </svg>
                             </div>
-                            <h3 className="mb-2 text-xl font-bold dark:text-white">Legal</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Protect your organization, devices and stay
-                                compliant with
-                                our structured workflows and custom permissions made for you.</p>
+                            <h3 className="mb-2 text-xl font-bold -dark:text-white">Flexible custom workflows</h3>
+                            <p className="text-gray-500 -dark:text-gray-400">The platform allows enterprises to customize and adjust workflows based on their needs.</p>
                         </div>
                         <div>
                             <div
-                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
-                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 -dark:bg-blue-900">
+                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 -dark:text-blue-300"
                                      fill="currentColor"
                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd"
@@ -239,15 +228,13 @@ export default function Home() {
                                         d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
                                 </svg>
                             </div>
-                            <h3 className="mb-2 text-xl font-bold dark:text-white">Business Automation</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Auto-assign tasks, send Slack messages, and
-                                much more. Now
-                                power up with hundreds of new templates to help you get started.</p>
+                            <h3 className="mb-2 text-xl font-bold -dark:text-white">Integrated business operations</h3>
+                            <p className="text-gray-500 -dark:text-gray-400">Including but not limited to expenses, sales management, customer service, etc.</p>
                         </div>
                         <div>
                             <div
-                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
-                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 -dark:bg-blue-900">
+                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 -dark:text-blue-300"
                                      fill="currentColor"
                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -257,30 +244,26 @@ export default function Home() {
                                           clipRule="evenodd"></path>
                                 </svg>
                             </div>
-                            <h3 className="mb-2 text-xl font-bold dark:text-white">Finance</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Audit-proof software built for critical
-                                financial
-                                operations like month-end close and quarterly budgeting.</p>
+                            <h3 className="mb-2 text-xl font-bold -dark:text-white">Flexibility</h3>
+                            <p className="text-gray-500 -dark:text-gray-400">Services and pricing models are adaptable for businesses of varying sizes.</p>
                         </div>
                         <div>
                             <div
-                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
-                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 -dark:bg-blue-900">
+                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 -dark:text-blue-300"
                                      fill="currentColor"
                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
                                 </svg>
                             </div>
-                            <h3 className="mb-2 text-xl font-bold dark:text-white">Enterprise Design</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Craft beautiful, delightful experiences for
-                                both marketing
-                                and product with real cross-company collaboration.</p>
+                            <h3 className="mb-2 text-xl font-bold -dark:text-white">Data security and privacy</h3>
+                            <p className="text-gray-500 -dark:text-gray-400">Rigorous protection of enterprise data and user privacy in compliance with relevant regulations.</p>
                         </div>
                         <div>
                             <div
-                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
-                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+                                className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 -dark:bg-blue-900">
+                                <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 -dark:text-blue-300"
                                      fill="currentColor"
                                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd"
@@ -288,30 +271,24 @@ export default function Home() {
                                           clipRule="evenodd"></path>
                                 </svg>
                             </div>
-                            <h3 className="mb-2 text-xl font-bold dark:text-white">Operations</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Keep your company’s lights on with
-                                customizable,
-                                iterative, and structured workflows built for all efficient teams and individual.</p>
+                            <h3 className="mb-2 text-xl font-bold -dark:text-white">Quality user experience</h3>
+                            <p className="text-gray-500 -dark:text-gray-400">With an intuitive interface, simple operation, and extensive user support.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section className="bg-white dark:bg-gray-900">
+            <section className="bg-white -dark:bg-gray-900">
                 <div
                     className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
-                    <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-                        <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">We didn't reinvent
+                    <div className="font-light text-gray-500 sm:text-lg -dark:text-gray-400">
+                        <h2 className="mb-4 text-4xl font-extrabold text-gray-900 -dark:text-white">We didn't reinvent
                             the wheel</h2>
                         <p className="mb-4">We are strategists, designers and developers. Innovators and problem
                             solvers. Small
-                            enough to be simple and quick, but big enough to deliver the scope you want at the pace you
-                            need. Small
-                            enough to be simple and quick, but big enough to deliver the scope you want at the pace you
-                            need.</p>
-                        <p>We are strategists, designers and developers. Innovators and problem solvers. Small enough to
-                            be simple
-                            and quick.</p>
+                            enough to be simple and quick, but big enough to provide the next generation automation tool. </p>
+                        <p className="mb-4">Our engine is responsible for handling the tasks sent from the Natural Language Processing and Understanding Layer. It identifies the type of the task, maps it to the corresponding service, and manages the task execution lifecycle. This engine is designed to handle multiple tasks concurrently and should be able to scale with the platform usage.</p>
+                        <p>We use Speech-to-Text and Text-to-Speech APIs with blend of natural language processing to automate task management and execution.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4 mt-8">
                         <Image
@@ -332,50 +309,33 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="bg-gray-50 dark:bg-gray-900 dark:bg-gray-800">
+            <section className="bg-gray-50 -dark:bg-gray-900">
                 <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-                    <div className="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400">
-                        <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">Powering innovation
-                            at <span
-                                className="font-extrabold">200,000+</span> companies worldwide</h2>
-                        <p className="mb-4 font-light">Track work across the enterprise through an open, collaborative
-                            platform.
-                            Link issues across Jira and ingest data from other software development tools, so your IT
-                            support and
-                            operations teams have richer contextual information to rapidly respond to requests,
-                            incidents, and
-                            changes.</p>
-                        <p className="mb-4 font-medium">Deliver great service experiences fast - without the complexity
-                            of
-                            traditional ITSM solutions.Accelerate critical development work, eliminate toil, and deploy
-                            changes with
-                            ease.</p>
-                        <a href="#"
-                           className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
-                            Learn more
+                    <div className="max-w-screen-lg text-gray-500 sm:text-lg -dark:text-gray-400">
+                        <h2 className="mb-4 text-4xl font-bold text-gray-900 -dark:text-white">Powering innovation for <span className="font-extrabold">enterprises</span> </h2>
+                        <p className="mb-4 font-light">Our platform offer an extraordinary toolkit for harnessing the potential of speech-driven generative AI and data engineering. It can create workflows that can generate high-quality speech, transcribe audio content accurately, and deliver personalized voice experiences. As artificial intelligence continues to evolve and expand its offerings, we can anticipate a future where voice technology becomes more accessible, intelligent, and seamlessly integrated into our daily lives.</p>
+                        <p className="mb-4 font-medium">Deliver great experience fast - without the complexity of traditional  solutions.Accelerate critical development work, eliminate toil, and deploy workflows with ease.</p>
+                        <Link href="/marketplace"
+                           className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 -dark:text-blue-500 -dark:hover:text-blue-700">
+                            Explore Marketplace
                             <svg className="ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd"
                                       d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                       clipRule="evenodd"></path>
                             </svg>
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
 
-            <section className="bg-white dark:bg-gray-900">
+            <section className="bg-white -dark:bg-gray-900">
                 <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
                     <div className="mx-auto max-w-screen-sm text-center">
-                        <h2 className="mb-4 text-4xl font-extrabold leading-tight text-gray-900 dark:text-white">Start
-                            your free
-                            trial today</h2>
-                        <p className="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Try Gaite Platform
-                            for 30
-                            days. No credit card required.</p>
+                        <h2 className="mb-4 text-4xl font-extrabold leading-tight text-gray-900 -dark:text-white">Start your demo to explore more</h2>
+                        <p className="mb-6 font-light text-gray-500 -dark:text-gray-400 md:text-lg">Try our platform for task management. No credit card required.</p>
                         <a href="#"
-                           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Free
-                            trial for 30 days</a>
+                           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 -dark:bg-blue-600 -dark:hover:bg-blue-700 focus:outline-none -dark:focus:ring-blue-800">Start a free demo</a>
                     </div>
                 </div>
             </section>
